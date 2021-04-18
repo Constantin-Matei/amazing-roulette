@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import Slot from '../slot'
 import { StyledBoard, StyledBoardWrapper } from './board.style'
+import Slot from '../slot'
 import Ball from '../ball/ball.component'
 import Selected from '../selected/selected.component'
 
 const Board = () => {
   const [selected, setSelected] = useState(null)
+  const [message, setMessage] = useState('')
   const [winner, setWinner] = useState({ animationPlayState: 'paused' })
   const length = 18
 
@@ -15,7 +16,7 @@ const Board = () => {
       rotation: 0,
       color: 'green',
     },
-    ...Array.from({ length }, (_,key) => key + 1).map(n => ({
+    ...Array.from({ length }, (_, key) => key + 1).map(n => ({
       number: n + '',
       rotation: ~~(360 / 38 * n * 100) / 100,
       color: n % 2 ? 'black' : 'red',
@@ -34,9 +35,9 @@ const Board = () => {
 
   const showMessage = (win, multiplier) => {
     if(win){
-      console.log(`You won £${multiplier * 10}`)
+      setMessage(`You won £${multiplier * 10}`)
     } else {
-      console.log(`You lost £${multiplier * 10}`)
+      setMessage(`You lost £${multiplier * 10}`)
     }
   }
 
@@ -53,18 +54,19 @@ const Board = () => {
     if(['even', 'odd'].includes(key)) {
       const o ={
         0: 'even',
-        1: 'odd'
+        1: 'odd',
       }
       showMessage(o[+slotList[randomNumber].number % 2] === key, multiplier)
     } else if(['black', 'red'].includes(key)) {
       showMessage(slotList[randomNumber].color === key, multiplier)
     } else {
-      showMessage(slotList[randomNumber].color === key, multiplier)
+      const keyPieces = key.split(',')
+      showMessage(keyPieces.includes(slotList[randomNumber].number), multiplier)
     }
   }
 
   const handleSelect = (key, multiplier) => {
-    setSelected({key,multiplier})
+    setSelected({key, multiplier})
   }
 
   return (
@@ -73,6 +75,7 @@ const Board = () => {
         {slotList.map(slot =>  <Slot key={slot.number}{...slot} />)}
       </StyledBoard>
       <Ball winner={winner}/>
+      <div>{message}</div>
       {selected && <button onClick={spinIt}>Spin it</button>}
       <Selected slotList={slotList} handleSelect={handleSelect} />
     </StyledBoardWrapper>
