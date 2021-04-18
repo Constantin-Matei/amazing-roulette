@@ -50,12 +50,16 @@ const Board = () => {
 
     console.log(slotList[randomNumber], selected)
     const { key, multiplier } = selected;
-    if(['even', 'odd'].includes(key)){
+    if(['even', 'odd'].includes(key)) {
       const o ={
         0: 'even',
         1: 'odd'
       }
       showMessage(o[+slotList[randomNumber].number % 2] === key, multiplier)
+    } else if(['black', 'red'].includes(key)) {
+      showMessage(slotList[randomNumber].color === key, multiplier)
+    } else {
+      showMessage(slotList[randomNumber].color === key, multiplier)
     }
   }
 
